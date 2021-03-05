@@ -33,7 +33,7 @@ struct GameCategory: Codable, Identifiable, Hashable {
     let rules: String?
     let players: Players
     let links: [Link]
-    let type: DatumType
+    let type: CategoryType
     let id: String
     let weblink: String
     let miscellaneous: Bool
@@ -59,7 +59,7 @@ struct Players: Codable, Hashable {
 //    case exactly = "exactly"
 //}
 
-enum DatumType: String, Codable {
+enum CategoryType: String, Codable {
     case perGame = "per-game"
     case perLevel = "per-level"
 }
