@@ -11,8 +11,8 @@ struct RunsResult: Codable {
     let pagination: Pagination
 }
 
-// MARK: - Datum
-struct Run: Codable {
+// MARK: - Run
+struct Run: Codable, Identifiable {
     let id: String
     let weblink: String
     let game: String
@@ -28,11 +28,11 @@ struct Run: Codable {
     let system: System
 //    let splits: Splits
     let values: [String: String]
-    let links: [DatumLink]
+    let links: [RunLink]
 }
 
 // MARK: - DatumLink
-struct DatumLink: Codable {
+struct RunLink: Codable {
     let rel: String
     let uri: String
 }

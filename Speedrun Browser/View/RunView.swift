@@ -14,6 +14,7 @@ struct RunView: View {
     @ObservedObject var viewModel: RunsResultViewModel
     
     @State private var showCategoryRule = false
+    @State private var showCopyBanner = false
     
     var body: some View {
         
@@ -28,6 +29,7 @@ struct RunView: View {
         }
         .onAppear() {
             viewModel.getRuns()
+            viewModel.getCategories()
         }
         .edgesIgnoringSafeArea(.all)
     }
@@ -49,8 +51,18 @@ struct RunView: View {
                     .bold()
                     .font(.largeTitle)
                 Spacer()
-                Text(viewModel.game.id)
-                    .font(.system(size: 12, design: .monospaced))
+                Button(viewModel.game.id) {
+                    UIPasteboard.general.string = viewModel.game.id
+                    showCopyBanner.toggle()
+                }
+                .font(.system(size: 12, design: .monospaced))
+//                Text(viewModel.game.id)
+//                    .font(.system(size: 12, design: .monospaced))
+//                    .onTapGesture {
+//                        UIPasteboard.general.string = viewModel.game.id
+//                        showCopyBanner.toggle()
+//                    }
+//                    .banner(data: BannerData(title: "Copied", detail: "\(viewModel.game.id) copied to clipboard.", type: .Success), show: $showCopyBanner)
             }
                 .foregroundColor(.white)
                 .shadow(color: .black, radius: 5)
@@ -83,6 +95,16 @@ struct RunView: View {
     }
     
     // MARK: - Detail
+    
+    struct RunViewDetail: View {
+        
+        var body: some View {
+            VStack {
+                
+            }
+        }
+    }
+    
     var detail: some View {
         VStack {
             HStack(alignment: .firstTextBaseline) {
@@ -110,13 +132,30 @@ struct RunView: View {
                             Parma(viewModel.selectedCategory?.name == nil ? "Please select a category first." : viewModel.selectedCategory?.rules ?? "No rules given.")
                                 .padding()
                         }
-                        .navigationTitle("Rules - \(viewModel.selectedCategory?.name ?? viewModel.game.names.international)")
+                        .navigationTitle("\(viewModel.selectedCategory?.name ?? viewModel.game.names.international)")
                     }
                 }
             }
+            
+            // MARK: - Run List
+            Text(viewModel.selectedCategory?.links[0].uri ?? "N/A")
+                .onTapGesture {
+                    UIPasteboard.general.string = viewModel.selectedCategory?.links[0].uri ?? "N/A"
+                }
+            
+            if let runResult = viewModel.runsResult {
+                ForEach(runResult.data.filter { run in
+                    run.category == viewModel.selectedCategory?.id ?? "N/A"
+                }) { run in
+                    Text(run.game)
+                    LeaderboardView(urlString: run.links[5].uri)
+                    // TODO: - Index out of range
+                }
+            } else {
+                
+            }
         }
     }
-    
 }
 
 extension RunView {

@@ -35,23 +35,19 @@ class RunsResultViewModel: ObservableObject {
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = .iso8601
                     let newRun = try decoder.decode(RunsResult.self, from: data)
-//                    print(newRun)
+                    DispatchQueue.main.async {
+                        self.runsResult = newRun
+                    }
                 } catch {
                     print(error)
                     
                     let clipboard = UIPasteboard.general
                     clipboard.string = String(data: data, encoding: .utf8)
                 }
-//                if newRun != nil {
-//                    DispatchQueue.main.async {
-//                        self.runsResult = newRun!
-//                    }
-//                }
             }
         }
         
         task.resume()
-        getCategories()
     }
     
     func getCategories() {
